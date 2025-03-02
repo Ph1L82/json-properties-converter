@@ -2,7 +2,7 @@
  * @ Author: Eduardo 'Ph1L' Rodríguez Bahamonde
  * @ Create Time: 2025-03-02 14:57:00
  * @ Modified by: Eduardo 'Ph1L' Rodríguez Bahamonde
- * @ Modified time: 2025-03-02 14:57:19
+ * @ Modified time: 2025-03-02 15:43:57
  * @ Description:   Implementación del servicio de conversión de JSON a Properties.
  *                  Sigue el principio de Responsabilidad Única (SRP) de SOLID.
  */
@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
@@ -38,6 +39,12 @@ public class JsonToPropertiesService implements ConversorService {
      */
     public JsonToPropertiesService() {
         this.objectMapper = new ObjectMapper();
+        // Habilitar soporte para comentarios en JSON
+        this.objectMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+        // Opcionalmente también permitir comillas simples y datos sin comillas
+        this.objectMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+        this.objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+
         this.propsMapper = new JavaPropsMapper();
     }
 
@@ -68,7 +75,7 @@ public class JsonToPropertiesService implements ConversorService {
 
         // Guardar las propiedades en un archivo .properties
         try (FileOutputStream fos = new FileOutputStream(archivoDestino)) {
-            properties.store(fos, "Generado desde JSON por JsonPropertiesConverter");
+            properties.store(fos, "Generado desde JSON por JsonPropertiesConverter by Ph1L82@PhilipSoft");
         }
 
         System.out.println("Archivo convertido a properties: " + archivoDestino);
